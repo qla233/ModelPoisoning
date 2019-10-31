@@ -75,7 +75,7 @@ def train_fn(X_train_shards, Y_train_shards, X_test, Y_test, return_dict,
 
         print('Joined all processes for time step %s' % t)
 
-        global_weights = np.load(gv.dir_name + 'global_weights_t%s.npy' % t)
+        global_weights = np.load(gv.dir_name + 'global_weights_t%s.npy' % t, allow_pickle=True)
 
         if 'avg' in args.gar:
             if args.mal:
@@ -117,7 +117,7 @@ def train_fn(X_train_shards, Y_train_shards, X_test, Y_test, return_dict,
                 dists = np.sort(np.array(dists))
                 dists_subset = dists[:agg_num]
                 score_array[k] = np.sum(dists_subset)
-            print score_array
+            print(score_array)
             krum_index = np.argmin(score_array)
             print krum_index
             global_weights += return_dict[str(krum_index)]

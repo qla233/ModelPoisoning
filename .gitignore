@@ -1,0 +1,5 @@
+*.swp
+*.pyc
+fashion-mnist/
+output_files/
+weights/

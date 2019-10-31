@@ -144,7 +144,7 @@ def init():
     if args.gpu_ids is not None:
         gpu_ids = args.gpu_ids
     else:
-        gpu_ids = [4,5]
+        gpu_ids = [0,1]
     global num_gpus
     num_gpus = len(gpu_ids)
 
@@ -159,7 +159,7 @@ def init():
         IMAGE_COLS = 28
         NUM_CHANNELS = 1
         NUM_CLASSES = 10
-        BATCH_SIZE = 100
+        BATCH_SIZE = 50
         if args.dataset == 'MNIST':
             max_acc = 99.0
         elif args.dataset == 'fMNIST':
@@ -179,7 +179,7 @@ def init():
         max_agents_per_gpu = 1
 
     global gpu_options
-    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=mem_frac)
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=mem_frac, allow_growth = True)
 
     global dir_name, output_dir_name, output_file_name, figures_dir_name, interpret_figs_dir_name
 

@@ -25,7 +25,7 @@ def benign_train(x, y, agent_model, logits, X_shard, Y_shard, sess, shared_weigh
     prediction = tf.nn.softmax(logits)
 
     if args.optimizer == 'adam':
-        optimizer = tf.train.AdamOptimizer(
+        optimizer = tf.compat.v1.train.AdamOptimizer(
             learning_rate=args.eta).minimize(loss)
     elif args.optimizer == 'sgd':
         optimizer = tf.train.GradientDescentOptimizer(
@@ -293,8 +293,8 @@ def mal_single_algs(x, y, logits, agent_model, shared_weights, sess, mal_data_X,
         weights_pl = None
 
     if 'adam' in args.optimizer:
-        optimizer = tf.train.AdamOptimizer(learning_rate=args.eta).minimize(loss)
-        mal_optimizer = tf.train.AdamOptimizer(
+        optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=args.eta).minimize(loss)
+        mal_optimizer = tf.compat.v1.train.AdamOptimizer(
             learning_rate=args.eta).minimize(mal_loss)
     elif 'sgd' in args.optimizer:
         mal_optimizer = tf.train.GradientDescentOptimizer(
@@ -436,7 +436,7 @@ def mal_agent(X_shard, Y_shard, mal_data_X, mal_data_Y, t, gpu_id, return_dict,
     
     args = gv.args
 
-    shared_weights = np.load(gv.dir_name + 'global_weights_t%s.npy' % t)
+    shared_weights = np.load(gv.dir_name + 'global_weights_t%s.npy' % t,allow_pickle=True)
     
     holdoff_flag = 0
     if 'holdoff' in args.mal_strat:
@@ -461,11 +461,11 @@ def mal_agent(X_shard, Y_shard, mal_data_X, mal_data_Y, t, gpu_id, return_dict,
                               gv.DATA_DIM), dtype=tf.float32)
         y = tf.placeholder(dtype=tf.int64)
     else:
-        x = tf.placeholder(shape=(None,
+        x = tf.compat.v1.placeholder(shape=(None,
                                   gv.IMAGE_ROWS,
                                   gv.IMAGE_COLS,
                                   gv.NUM_CHANNELS), dtype=tf.float32)
-        y = tf.placeholder(dtype=tf.int64)
+        y = tf.compat.v1.placeholder(dtype=tf.int64)
 
     if 'MNIST' in args.dataset:
         agent_model = model_mnist(type=args.model_num)
@@ -535,7 +535,6 @@ def mal_agent(X_shard, Y_shard, mal_data_X, mal_data_Y, t, gpu_id, return_dict,
                 (suc_count_local, args.mal_num))
 
         eval_success, eval_loss = eval_minimal(X_test, Y_test, penul_weights)
-        print('Penul weights ---- Malicious Agent: success {}, loss {}'.format(
-            eval_success, eval_loss))
+        print('Penul weights ---- Malicious Agent: success {}, loss {}'.format(eval_success, eval_loss))
 
     return
